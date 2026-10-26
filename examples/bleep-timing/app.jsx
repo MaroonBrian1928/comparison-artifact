@@ -11,28 +11,28 @@ const SOURCES = [
   { key: "per_word", label: "Hybrid, per word", short: "Per word", color: "var(--accent)" },
 ];
 
-// Real word timings from the 560 s crosstalk passage of Live From Boston (Night 1).
+// Word timings from a crosstalk passage about 560 s into a live episode.
 const MISS = {
   from: 559.9,
   to: 566.4,
   mfa: [
     ["I", 559.96, 560.08], ["don't", 560.08, 560.22], ["know", 560.22, 560.38], ["how", 560.38, 560.5],
     ["you", 560.5, 560.64], ["look", 560.64, 560.86], ["like,", 560.86, 561.33], ["but", 561.33, 561.43],
-    ["you're", 561.43, 561.53], ["not", 561.53, 561.84], ["fucking", 561.84, 562.23], ["cute.", 562.23, 562.41],
+    ["you're", 561.43, 561.53], ["not", 561.53, 561.84], ["freaking", 561.84, 562.23], ["cute.", 562.23, 562.41],
     ["Exactly.", 562.44, 563.1], ["Okay,", 563.1, 563.61], ["exactly.", 563.61, 564.2],
     ["You're", 564.2, 564.67], ["not", 564.67, 564.79], ["cute.", 564.79, 565.13], ["Exactly.", 565.13, 566.19],
   ],
   native: [
     ["I", 560.0, 560.08], ["don't", 560.08, 560.24], ["know", 560.24, 560.4], ["how", 560.4, 560.56],
     ["you", 560.56, 560.72], ["look", 560.72, 560.88], ["like,", 560.88, 561.12], ["but", 561.28, 561.44],
-    ["you're", 561.44, 561.6], ["not", 561.6, 561.84], ["fucking", 561.84, 562.16], ["cute.", 562.16, 562.48],
+    ["you're", 561.44, 561.6], ["not", 561.6, 561.84], ["freaking", 561.84, 562.16], ["cute.", 562.16, 562.48],
     ["Exactly.", 562.8, 563.12], ["Okay?", 563.28, 563.52], ["Exactly.", 563.76, 564.08],
     ["You're", 564.32, 564.56], ["not", 564.56, 564.72], ["cute.", 564.72, 565.12], ["Exactly.", 565.44, 565.84],
   ],
   qwen: [
     ["I", 560.0, 560.0], ["don't", 560.0, 561.12], ["know", 561.12, 561.12], ["how", 561.12, 561.12],
     ["you", 561.12, 561.12], ["look", 561.12, 563.2], ["like", 563.2, 563.2], ["but", 563.2, 563.2],
-    ["you're", 563.2, 563.2], ["not", 563.2, 563.2], ["fucking", 563.2, 563.2], ["cute", 563.2, 566.16],
+    ["you're", 563.2, 563.2], ["not", 563.2, 563.2], ["freaking", 563.2, 563.2], ["cute", 563.2, 566.16],
     ["Exactly", 566.16, 566.16],
   ],
 };
@@ -147,7 +147,7 @@ function MissTimeline() {
 
   return (
     <div className="chart-scroll" ref={root}>
-      <svg className="miss" viewBox={`0 0 ${W} 352`} role="img" aria-label="Word timelines from MFA, Parakeet and Qwen for the same six seconds of audio. MFA places 'fucking' at 561.84 to 562.23 seconds and Parakeet at 561.84 to 562.16. Qwen stacks five words, including 'fucking', at 563.20 seconds with zero length.">
+      <svg className="miss" viewBox={`0 0 ${W} 352`} role="img" aria-label="Word timelines from MFA, Parakeet and Qwen for the same six seconds of audio. MFA places 'freaking' at 561.84 to 562.23 seconds and Parakeet at 561.84 to 562.16. Qwen stacks five words, including 'freaking', at 563.20 seconds with zero length.">
         {frames.map((t) => (
           <line key={t} x1={x(t)} x2={x(t)} y1={30} y2={305} className="mt-frame" />
         ))}
@@ -158,12 +158,12 @@ function MissTimeline() {
           </g>
         ))}
         <rect className="mt-truth" x={x(561.84)} width={x(562.23) - x(561.84)} y={24} height={286} />
-        <text className="mt-truth mt-truth-label" x={x(562.035)} y={18} textAnchor="middle">"fucking" spoken here</text>
+        <text className="mt-truth mt-truth-label" x={x(562.035)} y={18} textAnchor="middle">"freaking" spoken here</text>
         {rows.map((row) => (
           <g key={row.key}>
             <text x={0} y={row.y + 5} className="mt-rowlabel">{row.label}</text>
             {row.words.map(([word, s, e], i) => {
-              const swear = word.startsWith("fucking");
+              const swear = word.startsWith("freaking");
               const zero = e - s < 0.02;
               if (zero) {
                 return <line key={i} className={`mt-bar-${row.key} mt-tick${swear ? " is-swear" : ""}`} x1={x(s)} x2={x(s)} y1={row.y - 14} y2={row.y + 14} />;
@@ -217,7 +217,7 @@ function Findings({ scheme }) {
     {
       figure: `${Math.round((failed / segments) * 100)}%`,
       label: "of segments had a broken Qwen word",
-      body: `${failed} of ${segments} segments, on every show, including 99% Invisible's studio narration. A live audience isn't the cause.`,
+      body: `${failed} of ${segments} segments, on every show, including Show F's studio narration. A live audience isn't the cause.`,
     },
   ];
   return (
@@ -488,7 +488,7 @@ function App() {
             <p className="eyebrow">The miss that started this</p>
             <h2>Same six seconds, three timelines</h2>
             <p>
-              A fast exchange from Live From Boston (Night 1). Faint ticks are Parakeet's 80 ms frame grid.
+              A fast exchange from Show A. Faint ticks are Parakeet's 80 ms frame grid.
               MFA, the reference, and Parakeet agree on where the swear was spoken, to within 70 ms. Qwen collapses half a sentence onto a single
               instant 1.4 s later. In Podly's run, that bleep lasted 1 ms and missed the word.
             </p>
